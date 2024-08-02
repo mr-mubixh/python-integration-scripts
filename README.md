@@ -85,6 +85,111 @@ Logs are stored in a file named `process.log` in the current directory. The scri
 
 This script is proprietary and intended for internal use only. Redistribution or modification without permission is prohibited.
 
+
+
+# README
+2- BigQuery data Integration
+## Overview
+
+This script processes data from Google BigQuery, performs transformations, and inserts the results into a MySQL database. It includes functionality for handling time zones, managing staging and transformed tables in BigQuery, and logging the entire process.
+
+## Prerequisites
+
+Before running the script, ensure the following are installed and configured:
+
+1. **Python 3.6+**
+2. **Google Cloud SDK** with BigQuery API enabled.
+3. **Python Libraries:**
+   - `google-cloud-bigquery`
+   - `mysql-connector-python`
+   - `python-dotenv`
+   - `pendulum`
+4. **MySQL Database:**
+   - A MySQL database should be available and accessible with the necessary permissions.
+5. **.env File:** 
+   - Create a `.env` file in the root directory containing the MySQL configuration.
+
+### Example `.env` file:
+```ini
+MYSQL_HOST=your_mysql_host
+MYSQL_USER=your_mysql_user
+MYSQL_PASSWORD=your_mysql_password
+MYSQL_DATABASE=your_mysql_database
+```
+
+## Setup
+
+### Configuration
+
+Modify the configuration values in the script to match your environment:
+
+- **Google BigQuery Configuration:**
+  - `target_table`: The source table in BigQuery.
+  - `transformed_table`: The destination table in BigQuery for transformed data.
+  - `staging_table`: A staging table in BigQuery used for interim data storage.
+
+- **MySQL Configuration:**
+  - These are stored in the `.env` file as shown above.
+
+### Logging
+
+Logs are stored in a file named `process.log` in the current directory. The script logs to both the console and the log file, capturing key events and errors during execution.
+
+## Usage
+
+### Running the Script
+
+1. **Ensure environment variables are loaded:**
+   - The script uses `python-dotenv` to load MySQL credentials from a `.env` file.
+
+2. **Execute the script:**
+   ```bash
+   python script_name.py
+   ```
+   Replace `script_name.py` with the actual filename.
+
+### Script Workflow
+
+1. **Staging Table Creation:**
+   - Creates a staging table in BigQuery if it doesn't already exist.
+
+2. **Query BigQuery:**
+   - Retrieves data from the target table, processes time zone information, and prepares the data for insertion.
+
+3. **Insert Data into Staging Table:**
+   - Inserts the processed data into the staging table, with batching to handle large datasets.
+
+4. **Merge Staging to Transformed Table:**
+   - Merges data from the staging table into the transformed table based on matching criteria.
+
+5. **Empty Staging Table:**
+   - Clears the staging table after successful data insertion.
+
+### Error Handling and Logging
+
+- The script includes error handling for database connections, BigQuery operations, and data processing. 
+- Errors are logged to the `process.log` file, and critical errors are displayed in the console.
+
+## Troubleshooting
+
+- **Connection Errors:**
+  - Ensure the BigQuery and MySQL credentials are correctly configured and accessible.
+  
+- **BigQuery Errors:**
+  - Verify that the necessary tables exist in BigQuery and the appropriate permissions are set.
+
+- **Logging:**
+  - Check the `process.log` file for detailed logs of the script execution.
+
+## License
+
+This script is proprietary and intended for internal use only. Redistribution or modification without permission is prohibited.
+
+---
+
+For any issues or questions, contact the development team.
+
+
 ---
 
 For any issues or questions, contact the development team.
