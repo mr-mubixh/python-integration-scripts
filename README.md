@@ -1,5 +1,4 @@
-# README
-1- Upwork API Integration
+# README (1- Upwork API Integration)
 ## Overview
 
 This script is designed to fetch data from the Upwork GraphQL API, process it, and store it in a MySQL database. It includes functionality for handling access tokens, fetching and storing data, logging, and retry mechanisms to ensure reliable execution.
@@ -81,14 +80,9 @@ Logs are stored in a file named `process.log` in the current directory. The scri
 - **Logging:**
   - Check the `process.log` file for detailed logs of the script execution.
 
-## License
-
-This script is proprietary and intended for internal use only. Redistribution or modification without permission is prohibited.
 
 
-
-# README
-2- BigQuery data Integration
+# README (2- BigQuery data Integration)
 ## Overview
 
 This script processes data from Google BigQuery, performs transformations, and inserts the results into a MySQL database. It includes functionality for handling time zones, managing staging and transformed tables in BigQuery, and logging the entire process.
@@ -181,14 +175,104 @@ Logs are stored in a file named `process.log` in the current directory. The scri
 - **Logging:**
   - Check the `process.log` file for detailed logs of the script execution.
 
+
+# README (3- NotionIo Data)
+
+## Overview
+
+This script fetches data from a Notion database using the Notion API and updates a Google Sheet with the retrieved data. The script is designed to run periodically, updating the Google Sheet with the latest Notion data, including formatting for better readability.
+
+## Prerequisites
+
+Before running the script, ensure the following are installed and configured:
+
+1. **Python 3.6+**
+2. **Google Cloud SDK** for authentication and access to Google Sheets.
+3. **Python Libraries:**
+   - `requests`
+   - `gspread`
+   - `oauth2client`
+   - `gspread_formatting`
+4. **Google Service Account:**
+   - Create a Google Cloud Service Account and download the credentials JSON file.
+   - Share the target Google Sheet with the service account email.
+5. **Notion API Token:**
+   - Obtain a Notion API key and have the database ID ready for accessing the data.
+
+### Example `.env` file:
+```ini
+NOTION_API_KEY=your_notion_api_key
+NOTION_DATABASE_ID=your_notion_database_id
+```
+
+## Setup
+
+### Configuration
+
+Modify the configuration values in the script to match your environment:
+
+- **Google Sheets Configuration:**
+  - The script uses a Service Account JSON file for Google Sheets API authentication.
+  - Update the path to your JSON keyfile in `creds = ServiceAccountCredentials.from_json_keyfile_name()`.
+
+- **Notion API Configuration:**
+  - Update the `NOTION_API_KEY` and `NOTION_DATABASE_ID` variables with your Notion credentials.
+
+### Logging
+
+Logs are stored in a file named `notion_data.log` in the current directory. The script logs to both the console and the log file, capturing key events and errors during execution.
+
+## Usage
+
+### Running the Script
+
+1. **Ensure environment variables are loaded:**
+   - Configure your Notion API key and Database ID in the script or via a `.env` file.
+
+2. **Execute the script:**
+   ```bash
+   python script_name.py
+   ```
+   Replace `script_name.py` with the actual filename.
+
+### Script Workflow
+
+1. **Fetch Data from Notion:**
+   - The script queries the Notion API to fetch data from the specified database.
+
+2. **Update Google Sheet:**
+   - Clears the Google Sheet and inserts the fetched data, with formatted headings and cells for clarity.
+
+3. **Error Handling:**
+   - The script includes error handling for HTTP requests, data parsing, and Google Sheets API interactions.
+
+### Scheduling
+
+You can set up a cron job to run the script at regular intervals. Example crontab entry to run the script every 30 minutes:
+```bash
+*/30 * * * * /usr/bin/python /path/to/fetch_notion_data.py >> /path/to/notion_to_sheets.log 2>&1
+```
+
+### Error Handling and Logging
+
+- Errors encountered during the process are logged to the `notion_data.log` file.
+- The script also prints logs to the console for real-time monitoring.
+
+## Troubleshooting
+
+- **Connection Errors:**
+  - Ensure your Notion API key is valid and that the Notion database ID is correct.
+  
+- **Google Sheets Errors:**
+  - Verify that the service account has access to the Google Sheet.
+
+- **Logging:**
+  - Check the `notion_data.log` file for detailed logs of the script execution.
+
+
 ## License
 
-This script is proprietary and intended for internal use only. Redistribution or modification without permission is prohibited.
-
----
-
-For any issues or questions, contact the development team.
-
+All scripts are proprietary and intended for internal use only. Redistribution or modification without permission is prohibited.
 
 ---
 
