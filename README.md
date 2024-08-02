@@ -269,8 +269,118 @@ You can set up a cron job to run the script at regular intervals. Example cronta
 - **Logging:**
   - Check the `notion_data.log` file for detailed logs of the script execution.
 
+# README (4- Redtrack Data)
 
-## License
+## Overview
+
+This script fetches campaign data from the RedTrack API for a specified date range and inserts the data into a MySQL database. It is designed to handle large data requests over multiple days by iterating over the specified date range, fetching data for each day, and storing it in the database.
+
+## Prerequisites
+
+Before running the script, ensure that you have the following installed and configured:
+
+1. **Python 3.6+**
+2. **Python Libraries:**
+   - `requests`
+   - `mysql-connector-python` (or `mysql-connector`)
+3. **MySQL Server:**
+   - Ensure MySQL is installed and accessible from your script.
+   - Create the necessary database and table (`campaign_metrics`) for storing the data.
+
+### Example `.env` file:
+```ini
+API_KEY=your_redtrack_api_key
+MYSQL_HOST=your_mysql_host
+MYSQL_DB=your_mysql_database
+MYSQL_USER=your_mysql_user
+MYSQL_PASSWORD=your_mysql_password
+```
+
+## Setup
+
+### Configuration
+
+Modify the configuration values in the script to match your environment:
+
+- **RedTrack API Configuration:**
+  - Update the `API_KEY` with your RedTrack API key.
+  - Update the `API_URL` if the endpoint changes.
+
+- **MySQL Configuration:**
+  - Update the `MYSQL_HOST`, `MYSQL_DB`, `MYSQL_USER`, and `MYSQL_PASSWORD` variables with your MySQL connection details.
+
+### MySQL Database Setup
+
+Create the necessary table in your MySQL database. Example SQL statement:
+```sql
+CREATE TABLE campaign_metrics (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    date DATE NOT NULL,
+    campaign_name VARCHAR(255) NOT NULL,
+    revenue DECIMAL(10, 2) NOT NULL,
+    cost DECIMAL(10, 2) NOT NULL
+);
+```
+
+### Logging
+
+Logs are stored in a file named `redtrack_data.log` in the current directory. The script logs to both the console and the log file, capturing key events and errors during execution.
+
+## Usage
+
+### Running the Script
+
+1. **Ensure environment variables are loaded:**
+   - Configure your RedTrack API key and MySQL connection details in the script or via a `.env` file.
+
+2. **Execute the script:**
+   ```bash
+   python script_name.py YYYY-MM-DD YYYY-MM-DD
+   ```
+   Replace `script_name.py` with the actual filename and provide the start and end dates in `YYYY-MM-DD` format.
+
+### Script Workflow
+
+1. **Fetch Data from RedTrack:**
+   - The script queries the RedTrack API for campaign data between the specified start and end dates.
+   - Data is fetched day by day to handle large date ranges.
+
+2. **Insert Data into MySQL:**
+   - For each day's data, the script checks if the data already exists in the database.
+   - If data for the day does not exist, it inserts the data into the `campaign_metrics` table.
+
+3. **Error Handling:**
+   - The script retries fetching data up to 3 times for each day if the API call fails or no data is returned.
+   - Errors encountered during MySQL interactions or API requests are logged for troubleshooting.
+
+### Scheduling
+
+You can set up a cron job to run the script at regular intervals. Example crontab entry to run the script daily:
+```bash
+0 1 * * * /usr/bin/python /path/to/script_name.py $(date +\%Y-\%m-\%d) $(date +\%Y-\%m-\%d) >> /path/to/redtrack_data.log 2>&1
+```
+
+### Error Handling and Logging
+
+- **API Errors:**
+  - The script retries failed API requests up to 3 times with a delay of 5 seconds between attempts.
+  
+- **MySQL Errors:**
+  - Verify that the MySQL connection details are correct and that the database and table exist.
+
+- **Logging:**
+  - Check the `redtrack_data.log` file for detailed logs of the script execution.
+
+## Troubleshooting
+
+- **Connection Errors:**
+  - Ensure your RedTrack API key is valid and that your MySQL credentials are correct.
+  
+- **Data Not Inserting:**
+  - Check the log file to see if data for a given date already exists or if there were errors during the insert operation.
+
+
+#### License
 
 All scripts are proprietary and intended for internal use only. Redistribution or modification without permission is prohibited.
 
